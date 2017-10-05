@@ -27,16 +27,12 @@
 'use strict';
 
 /**
- * Nozomi OpenAPI module.
- * @module
+ * @class OpenAPIGenerator
  */
+class OpenApiGenerator {
+
+}
 
 module.exports = {
-
-	/**
-	 * OpenApiGenerator
-	 * @see module:openapigenerator~OpenApiGenerator
-	 */
-	OpenApiGenerator: require('./openapigenerator')
-
+	OpenApiGenerator
 };
