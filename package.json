@@ -45,5 +45,8 @@
     ],
     "cache": true,
     "all": true
+  },
+  "dependencies": {
+    "avsc": "^5.0.6"
   }
 }

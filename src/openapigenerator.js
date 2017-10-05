@@ -26,10 +26,64 @@
 
 'use strict';
 
+const
+	schemaToPath = (avroSchema) => {
+
+		return {
+			['/' + avroSchema.name.split('.').pop()]: {}
+		};
+
+	},
+	schemaToDefinition = (avroSchema) => {
+
+		const
+			fieldToProperty = (properties, field) => {
+				properties[field.name] = {};
+				return properties;
+			};
+
+		return {
+			[avroSchema.name.split('.').pop()]: {
+				type: 'object',
+				properties: avroSchema.fields.reduce(fieldToProperty, {})
+			}
+		};
+
+	};
+
 /**
- * @class OpenAPIGenerator
+ * Generator for OpenAPI documents.
  */
 class OpenApiGenerator {
+
+	/**
+	 * Generate an OpenAPI 2.0 document.
+	 * 
+	 * @param {object} info - The document info.
+	 * @param {string} info.version - The version.
+	 * @param {string} info.title - The title.
+	 * @param {object} schemas
+	 * @return {object} - The document.
+	 */
+	generateV2(info, host, basePath, schemes, schemas) {
+
+		const
+			paths = schemas.map(schemaToPath),
+			definitions = schemas.map(schemaToDefinition);
+
+		return {
+			swagger: '2.0',
+			info,
+			host,
+			basePath,
+			schemes,
+			consumes: ['application/json'],
+			produces: ['application/json'],
+			paths,
+			definitions
+		};
+
+	}
 
 }
 
