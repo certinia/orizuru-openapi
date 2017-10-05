@@ -1,0 +1,48 @@
+{
+  "name": "@financialforcedev/nozomi-openapi",
+  "version": "1.0.0",
+  "description": "OpenAPI generator for Nozomi.",
+  "main": "index.js",
+  "scripts": {
+    "doc": "jsdoc src -r -d doc --readme readme.md",
+    "pretest": "eslint src test",
+    "test": "nyc mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@stash.dev.financialforce.com:29418/research/financialforcedev--nozomi-openapi.git"
+  },
+  "keywords": [
+    "openapi",
+    "nozomi",
+    "avro"
+  ],
+  "author": "financialforce",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.8.0",
+    "jsdoc": "^3.5.5",
+    "mocha": "^4.0.0",
+    "nyc": "^11.2.1"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "per-file": true,
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 100,
+    "include": [
+      "src"
+    ],
+    "reporter": [
+      "lcov",
+      "html",
+      "text",
+      "text-summary"
+    ],
+    "cache": true,
+    "all": true
+  }
+}
