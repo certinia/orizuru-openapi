@@ -62,8 +62,8 @@ describe('openapigenerator.js', () => {
 				],
 				consumes: ['application/json'],
 				produces: ['application/json'],
-				paths: [],
-				definitions: []
+				paths: {},
+				definitions: {}
 			});
 
 		});
@@ -96,21 +96,79 @@ describe('openapigenerator.js', () => {
 				],
 				consumes: ['application/json'],
 				produces: ['application/json'],
-				paths: [
-					{ '/Question': {} }
-				],
-				definitions: [{
-					Question: {
-						type: 'object',
-						properties: {
-							deliveries: {},
-							id: {}
+				paths: {
+					'/Question': {
+						post: {
+							description: 'Raise a Question event.',
+							operationId: 'Question',
+							parameters: [{
+								name: 'Question',
+								'in': 'body',
+								description: 'Question',
+								required: true,
+								schema: {
+									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Question'
+								}
+							}],
+							responses: {
+								200: {
+									description: 'Question response'
+								},
+								'default': {
+									description: 'Error'
+								}
+							}
 						}
 					}
-				}]
+				},
+				definitions: {
+					'com.ffdc.orizuru.problem.avro.Location': {
+						type: 'object',
+						required: ['lat', 'lng'],
+						properties: {
+							lat: {
+								type: 'number'
+							},
+							lng: {
+								type: 'number'
+							}
+						}
+					},
+					'com.ffdc.orizuru.problem.avro.Delivery': {
+						type: 'object',
+						required: ['id', 'type', 'capacity', 'location'],
+						properties: {
+							id: {
+								type: 'string'
+							},
+							type: {
+								type: 'string'
+							},
+							capacity: {
+								type: 'integer'
+							},
+							location: {
+								$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Location'
+							}
+						}
+					},
+					'com.ffdc.orizuru.problem.avro.Question': {
+						type: 'object',
+						required: ['id', 'deliveries'],
+						properties: {
+							deliveries: {
+								type: 'array',
+								items: {
+									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Delivery'
+								}
+							},
+							id: {
+								type: 'string'
+							}
+						}
+					}
+				}
 			});
-
 		});
-
 	});
 });

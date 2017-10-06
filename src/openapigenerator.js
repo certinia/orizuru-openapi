@@ -27,28 +27,116 @@
 'use strict';
 
 const
-	schemaToPath = (avroSchema) => {
+	simpleTypeMapper = (definitionsState, type) => {
+		return {
+			type: type.typeName
+		};
+	},
+
+	intTypeMapper = (definitionsState, type) => {
+		return {
+			type: 'integer'
+		};
+	},
+
+	doubleTypeMapper = (definitionsState, type) => {
+		return {
+			type: 'number'
+		};
+	},
+
+	recordMapper = (definitionsState, type) => {
+
+		definitionsState.refs.push(type);
 
 		return {
-			['/' + avroSchema.name.split('.').pop()]: {}
+			['$ref']: '#/definitions/' +
+				type.name
 		};
-
 	},
-	schemaToDefinition = (avroSchema) => {
+
+	fullRecordMapper = (definitionsState, type) => {
 
 		const
 			fieldToProperty = (properties, field) => {
-				properties[field.name] = {};
-				return properties;
-			};
+				const
+					mapper = definitionsState.typeMappers[field.type.typeName];
 
-		return {
-			[avroSchema.name.split('.').pop()]: {
+				// if (!mapper) {
+				// 	throw new Error('No Mapper for ' + field.type.typeName);
+				// }
+
+				properties[field.name] = mapper(definitionsState, field.type);
+				return properties;
+			},
+			properties = type.fields.reduce(fieldToProperty, {});
+
+		definitionsState.definitions.push({
+			name: type.name,
+			value: {
 				type: 'object',
-				properties: avroSchema.fields.reduce(fieldToProperty, {})
+				required: type.fields.map(field => field.name),
+				properties: properties
+			}
+		});
+	},
+
+	arrayMapper = (definitionsState, type, typeMappers) => {
+		return {
+			type: 'array',
+			items: definitionsState.typeMappers[type.itemsType.typeName](definitionsState, type.itemsType)
+		};
+	},
+
+	schemaToPaths = (paths, avroSchema) => {
+
+		const
+			shortName = avroSchema.name.split('.').pop();
+
+		paths['/' + shortName] = {
+			post: {
+				description: 'Raise a ' + shortName + ' event.',
+				operationId: shortName,
+				parameters: [{
+					name: shortName,
+					'in': 'body',
+					description: shortName,
+					required: true,
+					schema: {
+						$ref: '#/definitions/' + avroSchema.name
+					}
+				}],
+				responses: {
+					200: {
+						description: shortName + ' response'
+					},
+					'default': {
+						description: 'Error'
+					}
+				}
 			}
 		};
 
+		return paths;
+
+	},
+	schemaToDefinitions = (definitionsState, avroSchema, typeMappers) => {
+
+		fullRecordMapper(definitionsState, avroSchema);
+
+		while (definitionsState.refs.length > 0) {
+			fullRecordMapper(definitionsState, definitionsState.refs.pop());
+		}
+
+		return definitionsState;
+	},
+
+	typeMappers = {
+		string: simpleTypeMapper,
+		'int': intTypeMapper,
+		'double': doubleTypeMapper,
+		array: arrayMapper,
+		record: recordMapper
 	};
 
 /**
@@ -68,8 +156,16 @@ class OpenApiGenerator {
 	generateV2(info, host, basePath, schemes, schemas) {
 
 		const
-			paths = schemas.map(schemaToPath),
-			definitions = schemas.map(schemaToDefinition);
+			paths = schemas.reduce(schemaToPaths, {}),
+			definitionsState = schemas.reduce(schemaToDefinitions, {
+				definitions: [],
+				refs: [],
+				typeMappers: typeMappers
+			}),
+			defs = definitionsState.definitions.reverse().reduce((accum, def) => {
+				accum[def.name] = def.value;
+				return accum;
+			}, {});
 
 		return {
 			swagger: '2.0',
@@ -80,7 +176,7 @@ class OpenApiGenerator {
 			consumes: ['application/json'],
 			produces: ['application/json'],
 			paths,
-			definitions
+			definitions: defs
 		};
 
 	}
