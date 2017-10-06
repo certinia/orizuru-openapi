@@ -36,13 +36,13 @@ describe('index.js', () => {
 
 		// given - when
 		const
-			mockOpenApiGenerator = { mock: 'mockOpenApiGenerator' },
+			mockGenerator = { mock: 'mockGenerator' },
 			index = proxyquire('../src/index', {
-				['./openapigenerator']: mockOpenApiGenerator
+				['./openapigenerator']: mockGenerator
 			});
 
 		// then
-		expect(index.OpenApiGenerator).to.eql(mockOpenApiGenerator);
+		expect(index.generator).to.eql(mockGenerator);
 
 	});
 

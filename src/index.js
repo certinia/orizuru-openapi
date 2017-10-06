@@ -34,9 +34,9 @@
 module.exports = {
 
 	/**
-	 * OpenApiGenerator
-	 * @see module:openapigenerator~OpenApiGenerator
+	 * generator
+	 * @see module:openapigenerator~generator
 	 */
-	OpenApiGenerator: require('./openapigenerator')
+	generator: require('./openapigenerator')
 
 };

@@ -27,28 +27,49 @@
 'use strict';
 
 const
-	avsc = require('avsc'),
-	{ OpenApiGenerator } = require('../src/openapigenerator'),
-	{ expect } = require('chai');
+	_ = require('lodash'),
+	sinon = require('sinon'),
+	sandbox = sinon.sandbox.create(),
+	generateV2 = require('../src/openapigenerator').generateV2,
+	{ calledOnce, calledWith } = sinon.assert;
 
 describe('openapigenerator.js', () => {
 
-	describe('OpenApiGenerator', () => {
+	let
+		req, res;
+
+	beforeEach(() => {
+		req = {};
+		res = { json: _.noop };
+
+		sandbox.stub(res, 'json');
+	});
+
+	afterEach(() => {
+		sandbox.reset();
+	});
+
+	describe('generateV2', () => {
 
 		it('generate a valid document for no schemas', () => {
 
 			// given
 			const
-				generator = new OpenApiGenerator(),
-				schemas = [],
-				doc = generator.generateV2({
+				schemaMap = {},
+				handler = generateV2({
 					version: '1.0.0',
 					title: 'Test',
 					description: 'Desc'
-				}, 'test.com', '/api', ['http'], schemas);
+				}, 'test.com', '/api', ['http'], schemaMap);
+
+			// when
+
+			handler(req, res);
 
 			// then
-			expect(doc).to.deep.eql({
+
+			calledOnce(res.json);
+			calledWith(res.json, {
 				swagger: '2.0',
 				info: {
 					version: '1.0.0',
@@ -72,17 +93,23 @@ describe('openapigenerator.js', () => {
 
 			// given
 			const
-				generator = new OpenApiGenerator(),
-				testAvroSchema = avsc.Type.forSchema(require('./resources/test')),
-				schemas = [testAvroSchema],
-				doc = generator.generateV2({
+				schemaMap = {
+					TestRoute: require('./resources/test')
+				},
+				handler = generateV2({
 					version: '1.0.0',
 					title: 'Test',
 					description: 'Desc'
-				}, 'test.com', '/api', ['http'], schemas);
+				}, 'test.com', '/api', ['http'], schemaMap);
+
+			// when
+
+			handler(req, res);
 
 			// then
-			expect(doc).to.deep.eql({
+
+			calledOnce(res.json);
+			calledWith(res.json, {
 				swagger: '2.0',
 				info: {
 					version: '1.0.0',
@@ -97,10 +124,10 @@ describe('openapigenerator.js', () => {
 				consumes: ['application/json'],
 				produces: ['application/json'],
 				paths: {
-					'/Question': {
+					'/TestRoute': {
 						post: {
 							description: 'Raise a Question event.',
-							operationId: 'Question',
+							operationId: 'TestRoute',
 							parameters: [{
 								name: 'Question',
 								'in': 'body',
@@ -112,7 +139,7 @@ describe('openapigenerator.js', () => {
 							}],
 							responses: {
 								200: {
-									description: 'Question response'
+									description: 'TestRoute response'
 								},
 								'default': {
 									description: 'Error'

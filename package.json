@@ -2,7 +2,7 @@
   "name": "@financialforcedev/nozomi-openapi",
   "version": "1.0.0",
   "description": "OpenAPI generator for Nozomi.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "doc": "jsdoc src -r -d doc --readme readme.md",
     "pretest": "eslint src test",
@@ -25,7 +25,8 @@
     "jsdoc": "^3.5.5",
     "mocha": "^4.0.0",
     "nyc": "^11.2.1",
-    "proxyquire": "^1.8.0"
+    "proxyquire": "^1.8.0",
+    "sinon": "^4.0.1"
   },
   "nyc": {
     "check-coverage": true,
@@ -47,6 +48,7 @@
     "all": true
   },
   "dependencies": {
-    "avsc": "^5.0.6"
+    "avsc": "^5.0.6",
+    "lodash": "^4.17.4"
   }
 }

@@ -27,6 +27,20 @@
 'use strict';
 
 const
+
+	avsc = require('avsc'),
+
+	V2 = '2.0',
+	CONTENT_TYPE = 'application/json',
+
+	OPENAPI_TYPE_INTEGER = 'integer',
+	OPENAPI_TYPE_NUMBER = 'number',
+	OPENAPI_TYPE_OBJECT = 'object',
+	OPEN_API_TYPE_ARRAY = 'array',
+
+	REF_TAG = '$ref',
+	DEF_ROOT = '#/definitions/',
+
 	simpleTypeMapper = (definitionsState, type) => {
 		return {
 			type: type.typeName
@@ -35,36 +49,32 @@ const
 
 	intTypeMapper = (definitionsState, type) => {
 		return {
-			type: 'integer'
+			type: OPENAPI_TYPE_INTEGER
 		};
 	},
 
 	doubleTypeMapper = (definitionsState, type) => {
 		return {
-			type: 'number'
+			type: OPENAPI_TYPE_NUMBER
+		};
+	},
+
+	recordReferenceMapper = (definitionsState, type) => {
+
+		definitionsState.refs.push(type);
+
+		return {
+			[REF_TAG]: DEF_ROOT +
+				type.name
 		};
 	},
 
 	recordMapper = (definitionsState, type) => {
 
-		definitionsState.refs.push(type);
-
-		return {
-			['$ref']: '#/definitions/' +
-				type.name
-		};
-	},
-
-	fullRecordMapper = (definitionsState, type) => {
-
 		const
 			fieldToProperty = (properties, field) => {
 				const
 					mapper = definitionsState.typeMappers[field.type.typeName];
-
-				// if (!mapper) {
-				// 	throw new Error('No Mapper for ' + field.type.typeName);
-				// }
 
 				properties[field.name] = mapper(definitionsState, field.type);
 				return properties;
@@ -74,7 +84,7 @@ const
 		definitionsState.definitions.push({
 			name: type.name,
 			value: {
-				type: 'object',
+				type: OPENAPI_TYPE_OBJECT,
 				required: type.fields.map(field => field.name),
 				properties: properties
 			}
@@ -83,32 +93,32 @@ const
 
 	arrayMapper = (definitionsState, type, typeMappers) => {
 		return {
-			type: 'array',
+			type: OPEN_API_TYPE_ARRAY,
 			items: definitionsState.typeMappers[type.itemsType.typeName](definitionsState, type.itemsType)
 		};
 	},
 
-	schemaToPaths = (paths, avroSchema) => {
+	schemasToPaths = (paths, [name, avroSchema]) => {
 
 		const
-			shortName = avroSchema.name.split('.').pop();
+			recordName = avroSchema.name.split('.').pop();
 
-		paths['/' + shortName] = {
+		paths['/' + name] = {
 			post: {
-				description: 'Raise a ' + shortName + ' event.',
-				operationId: shortName,
+				description: `Raise a ${recordName} event.`,
+				operationId: name,
 				parameters: [{
-					name: shortName,
+					name: recordName,
 					'in': 'body',
-					description: shortName,
+					description: recordName,
 					required: true,
 					schema: {
-						$ref: '#/definitions/' + avroSchema.name
+						$ref: DEF_ROOT + avroSchema.name
 					}
 				}],
 				responses: {
 					200: {
-						description: shortName + ' response'
+						description: `${name} response`
 					},
 					'default': {
 						description: 'Error'
@@ -120,12 +130,12 @@ const
 		return paths;
 
 	},
-	schemaToDefinitions = (definitionsState, avroSchema, typeMappers) => {
+	schemaToDefinitions = (definitionsState, [name, avroSchema]) => {
 
-		fullRecordMapper(definitionsState, avroSchema);
+		recordMapper(definitionsState, avroSchema);
 
 		while (definitionsState.refs.length > 0) {
-			fullRecordMapper(definitionsState, definitionsState.refs.pop());
+			recordMapper(definitionsState, definitionsState.refs.pop());
 		}
 
 		return definitionsState;
@@ -136,13 +146,10 @@ const
 		'int': intTypeMapper,
 		'double': doubleTypeMapper,
 		array: arrayMapper,
-		record: recordMapper
+		record: recordReferenceMapper
 	};
 
-/**
- * Generator for OpenAPI documents.
- */
-class OpenApiGenerator {
+module.exports = {
 
 	/**
 	 * Generate an OpenAPI 2.0 document.
@@ -150,14 +157,16 @@ class OpenApiGenerator {
 	 * @param {object} info - The document info.
 	 * @param {string} info.version - The version.
 	 * @param {string} info.title - The title.
-	 * @param {object} schemas
+	 * @param {object} schemas - Map of name to schema object.
 	 * @return {object} - The document.
 	 */
-	generateV2(info, host, basePath, schemes, schemas) {
+	generateV2: (info, host, basePath, schemes, schemaNameToDefinition) => (req, res) => {
 
 		const
-			paths = schemas.reduce(schemaToPaths, {}),
-			definitionsState = schemas.reduce(schemaToDefinitions, {
+			entries = Object.keys(schemaNameToDefinition).map(name => [name, schemaNameToDefinition[name]]),
+			parsedSchemas = entries.map(([name, value]) => [name, avsc.Type.forSchema(value)]),
+			paths = parsedSchemas.reduce(schemasToPaths, {}),
+			definitionsState = parsedSchemas.reduce(schemaToDefinitions, {
 				definitions: [],
 				refs: [],
 				typeMappers: typeMappers
@@ -165,24 +174,20 @@ class OpenApiGenerator {
 			defs = definitionsState.definitions.reverse().reduce((accum, def) => {
 				accum[def.name] = def.value;
 				return accum;
-			}, {});
+			}, {}),
+			document = {
+				swagger: V2,
+				info,
+				host,
+				basePath,
+				schemes,
+				consumes: [CONTENT_TYPE],
+				produces: [CONTENT_TYPE],
+				paths,
+				definitions: defs
+			};
 
-		return {
-			swagger: '2.0',
-			info,
-			host,
-			basePath,
-			schemes,
-			consumes: ['application/json'],
-			produces: ['application/json'],
-			paths,
-			definitions: defs
-		};
-
+		res.json(document);
 	}
 
-}
-
-module.exports = {
-	OpenApiGenerator
 };
