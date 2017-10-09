@@ -139,7 +139,16 @@ describe('openapigenerator.js', () => {
 							}],
 							responses: {
 								200: {
-									description: 'TestRoute response'
+									description: 'TestRoute response',
+									schema: {
+										type: 'object',
+										required: ['id'],
+										properties: {
+											id: {
+												type: 'string'
+											}
+										}
+									}
 								},
 								'default': {
 									description: 'Error'
@@ -248,7 +257,16 @@ describe('openapigenerator.js', () => {
 							}],
 							responses: {
 								200: {
-									description: 'TestRoute response'
+									description: 'TestRoute response',
+									schema: {
+										type: 'object',
+										required: ['id'],
+										properties: {
+											id: {
+												type: 'string'
+											}
+										}
+									}
 								},
 								'default': {
 									description: 'Error'

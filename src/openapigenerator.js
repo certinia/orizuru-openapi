@@ -133,7 +133,16 @@ const
 				}],
 				responses: {
 					200: {
-						description: `${name} response`
+						description: `${name} response`,
+						schema: {
+							type: OPENAPI_TYPE_OBJECT,
+							required: ['id'],
+							properties: {
+								id: {
+									type: OPENAPI_TYPE_STRING
+								}
+							}
+						}
 					},
 					'default': {
 						description: 'Error'
