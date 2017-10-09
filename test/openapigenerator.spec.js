@@ -131,7 +131,7 @@ describe('openapigenerator.js', () => {
 							parameters: [{
 								name: 'Question',
 								'in': 'body',
-								description: 'Question',
+								description: 'A question to ask.',
 								required: true,
 								schema: {
 									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Question'
@@ -197,5 +197,98 @@ describe('openapigenerator.js', () => {
 				}
 			});
 		});
+
+		it('generate a valid document for all AVRO types', () => {
+
+			// given
+			const
+				schemaMap = {
+					TestRoute: require('./resources/types')
+				},
+				handler = generateV2({
+					version: '1.0.0',
+					title: 'Test',
+					description: 'Desc'
+				}, 'test.com', '/api', ['http'], schemaMap);
+
+			// when
+
+			handler(req, res);
+
+			// then
+
+			calledOnce(res.json);
+			calledWith(res.json, {
+				swagger: '2.0',
+				info: {
+					version: '1.0.0',
+					title: 'Test',
+					description: 'Desc'
+				},
+				host: 'test.com',
+				basePath: '/api',
+				schemes: [
+					'http'
+				],
+				consumes: ['application/json'],
+				produces: ['application/json'],
+				paths: {
+					'/TestRoute': {
+						post: {
+							description: 'Raise a Test event.',
+							operationId: 'TestRoute',
+							parameters: [{
+								name: 'Test',
+								'in': 'body',
+								description: 'Test.',
+								required: true,
+								schema: {
+									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Test'
+								}
+							}],
+							responses: {
+								200: {
+									description: 'TestRoute response'
+								},
+								'default': {
+									description: 'Error'
+								}
+							}
+						}
+					}
+				},
+				definitions: {
+					'com.ffdc.orizuru.problem.avro.Test': {
+						type: 'object',
+						required: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+						properties: {
+							a: {
+								type: 'boolean'
+							},
+							b: {
+								type: 'integer'
+							},
+							c: {
+								type: 'integer'
+							},
+							d: {
+								type: 'number'
+							},
+							e: {
+								type: 'number'
+							},
+							f: {
+								type: 'byte'
+							},
+							g: {
+								type: 'string'
+							}
+						}
+					}
+				}
+			});
+
+		});
+
 	});
 });

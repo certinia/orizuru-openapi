@@ -1,6 +1,7 @@
 {
 	"namespace": "com.ffdc.orizuru.problem.avro",
 	"name": "Question",
+	"doc": "A question to ask.",
 	"type": "record",
 	"fields": [{
 			"name": "id",

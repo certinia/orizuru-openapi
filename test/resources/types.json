@@ -1,0 +1,28 @@
+{
+	"namespace": "com.ffdc.orizuru.problem.avro",
+	"name": "Test",
+	"doc": "Test.",
+	"type": "record",
+	"fields": [{
+		"name": "a",
+		"type": "boolean"
+	}, {
+		"name": "b",
+		"type": "int"
+	}, {
+		"name": "c",
+		"type": "long"
+	}, {
+		"name": "d",
+		"type": "float"
+	}, {
+		"name": "e",
+		"type": "double"
+	}, {
+		"name": "f",
+		"type": "bytes"
+	}, {
+		"name": "g",
+		"type": "string"
+	}]
+}

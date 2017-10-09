@@ -33,29 +33,44 @@ const
 	V2 = '2.0',
 	CONTENT_TYPE = 'application/json',
 
+	OPENAPI_TYPE_BOOLEAN = 'boolean',
 	OPENAPI_TYPE_INTEGER = 'integer',
 	OPENAPI_TYPE_NUMBER = 'number',
+	OPENAPI_TYPE_STRING = 'string',
+	OPENAPI_TYPE_BYTE = 'byte',
 	OPENAPI_TYPE_OBJECT = 'object',
 	OPEN_API_TYPE_ARRAY = 'array',
 
 	REF_TAG = '$ref',
 	DEF_ROOT = '#/definitions/',
 
-	simpleTypeMapper = (definitionsState, type) => {
+	booleanTypeMapper = (definitionsState, type) => {
 		return {
-			type: type.typeName
+			type: OPENAPI_TYPE_BOOLEAN
 		};
 	},
 
-	intTypeMapper = (definitionsState, type) => {
+	stringTypeMapper = (definitionsState, type) => {
+		return {
+			type: OPENAPI_TYPE_STRING
+		};
+	},
+
+	integerTypeMapper = (definitionsState, type) => {
 		return {
 			type: OPENAPI_TYPE_INTEGER
 		};
 	},
 
-	doubleTypeMapper = (definitionsState, type) => {
+	numberTypeMapper = (definitionsState, type) => {
 		return {
 			type: OPENAPI_TYPE_NUMBER
+		};
+	},
+
+	byteTypeMapper = (definitionsState, type) => {
+		return {
+			type: OPENAPI_TYPE_BYTE
 		};
 	},
 
@@ -110,7 +125,7 @@ const
 				parameters: [{
 					name: recordName,
 					'in': 'body',
-					description: recordName,
+					description: avroSchema.doc,
 					required: true,
 					schema: {
 						$ref: DEF_ROOT + avroSchema.name
@@ -142,9 +157,13 @@ const
 	},
 
 	typeMappers = {
-		string: simpleTypeMapper,
-		'int': intTypeMapper,
-		'double': doubleTypeMapper,
+		'boolean': booleanTypeMapper,
+		'int': integerTypeMapper,
+		'long': integerTypeMapper,
+		'float': numberTypeMapper,
+		'double': numberTypeMapper,
+		bytes: byteTypeMapper,
+		string: stringTypeMapper,
 		array: arrayMapper,
 		record: recordReferenceMapper
 	};
