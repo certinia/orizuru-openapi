@@ -177,6 +177,11 @@ const
 		record: recordReferenceMapper
 	};
 
+/**
+ * OpenAPI Generator.
+ * @module
+ */
+
 module.exports = {
 
 	/**
@@ -185,6 +190,10 @@ module.exports = {
 	 * @param {object} info - The document info.
 	 * @param {string} info.version - The version.
 	 * @param {string} info.title - The title.
+	 * @param {string} info.description - The site description.
+	 * @param {string} host - The host.
+	 * @param {string} basePath - The base path for the api.
+	 * @param {string[]} schemes - Uri schemes bob.
 	 * @param {object} schemas - Map of name to schema object.
 	 * @return {object} - The document.
 	 */

@@ -35,7 +35,7 @@ module.exports = {
 
 	/**
 	 * generator
-	 * @see module:openapigenerator~generator
+	 * @see module:openapigenerator
 	 */
 	generator: require('./openapigenerator')
 
