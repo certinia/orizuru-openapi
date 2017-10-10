@@ -189,11 +189,20 @@ const
 module.exports = {
 
 	/**
-	 * Generate an OpenAPI 2.0 document.
+	 * @typedef RequestHandler
+	 * @type {function}
+	 * @param {Object} req - The request.
+	 * @param {Object} res - The response.
+	 */
+
+	/**
+	 * Returns an express RequestHandler function that will send an OpenAPI 2.0 document
+	 * as a JSON response. The template is merged with the paths and definitions
+	 * generated from the Avro schema map.
 	 * 
 	 * @param {object} template - The OpenAPI 2.0 template.
-	 * @param {object} schemas - Map of name to schema object.
-	 * @return {object} - The document.
+	 * @param {object} schemas - Map of name to Avro schema JSON object.
+	 * @return {RequestHandler} - The handler.
 	 */
 	generateV2: (template, schemaNameToDefinition) => (req, res) => {
 

@@ -1,6 +1,8 @@
 # Nozomi OpenAPI schema generator.
 
-Nozomi OpenAPI generator is a module that can generate an OpenAPI document from a map of service name to [Avro](https://avro.apache.org/) schemas. Each schema represents an input event that is exposed as a **POST** path, within the OpenAPI definition. 
+Nozomi OpenAPI generator is a module that can generate an OpenAPI document from a map of service name to [Avro](https://avro.apache.org/) schemas. Each schema represents an input event that is exposed as a **POST** path, within the OpenAPI definition.
+
+Currently [OpenAPI version 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md) documents are generated. 
 
 ## Install
 
@@ -20,10 +22,15 @@ schemaMap = {
 };
  
 app.get('/openapi/v2', openapiGenerator.generateV2({
-  version: '1.0.0',
-  title: 'Test',
-  description: 'My description'
-}, 'localhost:3000', '/api', ['http'], schemaMap));
+	info: {
+		version: '1.0.0',
+		title: 'Test',
+		description: 'My description'
+	}, 
+	host: 'localhost:3000', 
+	basePath: '/api', 
+	schemes: ['http']
+}, schemaMap));
 
 ```
 
