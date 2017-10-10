@@ -206,6 +206,7 @@ module.exports = {
 				refs: [],
 				typeMappers: typeMappers
 			}),
+			// Reverse the order so dependencies come before dependants.
 			defs = definitionsState.definitions.reverse().reduce((accum, def) => {
 				accum[def.name] = def.value;
 				return accum;
