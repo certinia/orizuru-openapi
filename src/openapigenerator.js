@@ -28,6 +28,7 @@
 
 const
 
+	_ = require('lodash'),
 	avsc = require('avsc'),
 
 	V2 = '2.0',
@@ -94,15 +95,18 @@ const
 				properties[field.name] = mapper(definitionsState, field.type);
 				return properties;
 			},
-			properties = type.fields.reduce(fieldToProperty, {});
+			properties = type.fields.reduce(fieldToProperty, {}),
+			definition = {
+				type: OPENAPI_TYPE_OBJECT,
+				properties: properties
+			},
+			required = {
+				required: type.fields.map(field => field.name)
+			};
 
 		definitionsState.definitions.push({
 			name: type.name,
-			value: {
-				type: OPENAPI_TYPE_OBJECT,
-				required: type.fields.map(field => field.name),
-				properties: properties
-			}
+			value: Object.assign(definition, type.fields.length ? required : {})
 		});
 	},
 
@@ -187,17 +191,11 @@ module.exports = {
 	/**
 	 * Generate an OpenAPI 2.0 document.
 	 * 
-	 * @param {object} info - The document info.
-	 * @param {string} info.version - The version.
-	 * @param {string} info.title - The title.
-	 * @param {string} info.description - The site description.
-	 * @param {string} host - The host.
-	 * @param {string} basePath - The base path for the api.
-	 * @param {string[]} schemes - Uri schemes bob.
+	 * @param {object} template - The OpenAPI 2.0 template.
 	 * @param {object} schemas - Map of name to schema object.
 	 * @return {object} - The document.
 	 */
-	generateV2: (info, host, basePath, schemes, schemaNameToDefinition) => (req, res) => {
+	generateV2: (template, schemaNameToDefinition) => (req, res) => {
 
 		const
 			entries = Object.keys(schemaNameToDefinition).map(name => [name, schemaNameToDefinition[name]]),
@@ -212,17 +210,17 @@ module.exports = {
 				accum[def.name] = def.value;
 				return accum;
 			}, {}),
-			document = {
+			document = _.merge({}, {
 				swagger: V2,
-				info,
-				host,
-				basePath,
-				schemes,
+				info: {},
+				host: '',
+				basePath: '',
+				schemes: ['https'],
 				consumes: [CONTENT_TYPE],
 				produces: [CONTENT_TYPE],
 				paths,
 				definitions: defs
-			};
+			}, template);
 
 		res.json(document);
 	}

@@ -36,11 +36,20 @@ const
 describe('openapigenerator.js', () => {
 
 	let
-		req, res;
+		req, res, template;
 
 	beforeEach(() => {
 		req = {};
 		res = { json: _.noop };
+		template = {
+			info: {
+				version: '1.0.0',
+				title: 'Test',
+				description: 'Desc'
+			},
+			host: 'test.com',
+			basePath: '/api'
+		};
 
 		sandbox.stub(res, 'json');
 	});
@@ -56,11 +65,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {},
-				handler = generateV2({
-					version: '1.0.0',
-					title: 'Test',
-					description: 'Desc'
-				}, 'test.com', '/api', ['http'], schemaMap);
+				handler = generateV2(_.merge(template, { schemes: ['http'] }), schemaMap);
 
 			// when
 
@@ -96,11 +101,7 @@ describe('openapigenerator.js', () => {
 				schemaMap = {
 					TestRoute: require('./resources/test')
 				},
-				handler = generateV2({
-					version: '1.0.0',
-					title: 'Test',
-					description: 'Desc'
-				}, 'test.com', '/api', ['http'], schemaMap);
+				handler = generateV2(template, schemaMap);
 
 			// when
 
@@ -119,7 +120,7 @@ describe('openapigenerator.js', () => {
 				host: 'test.com',
 				basePath: '/api',
 				schemes: [
-					'http'
+					'https'
 				],
 				consumes: ['application/json'],
 				produces: ['application/json'],
@@ -214,11 +215,7 @@ describe('openapigenerator.js', () => {
 				schemaMap = {
 					TestRoute: require('./resources/types')
 				},
-				handler = generateV2({
-					version: '1.0.0',
-					title: 'Test',
-					description: 'Desc'
-				}, 'test.com', '/api', ['http'], schemaMap);
+				handler = generateV2(template, schemaMap);
 
 			// when
 
@@ -237,7 +234,7 @@ describe('openapigenerator.js', () => {
 				host: 'test.com',
 				basePath: '/api',
 				schemes: [
-					'http'
+					'https'
 				],
 				consumes: ['application/json'],
 				produces: ['application/json'],
@@ -302,6 +299,80 @@ describe('openapigenerator.js', () => {
 								type: 'string'
 							}
 						}
+					}
+				}
+			});
+
+		});
+
+		it('generate a valid document when a record has no fields', () => {
+
+			// given
+			const
+				schemaMap = {
+					TestRoute: require('./resources/nofields')
+				},
+				handler = generateV2(template, schemaMap);
+
+			// when
+
+			handler(req, res);
+
+			// then
+
+			calledOnce(res.json);
+			calledWith(res.json, {
+				swagger: '2.0',
+				info: {
+					version: '1.0.0',
+					title: 'Test',
+					description: 'Desc'
+				},
+				host: 'test.com',
+				basePath: '/api',
+				schemes: [
+					'https'
+				],
+				consumes: ['application/json'],
+				produces: ['application/json'],
+				paths: {
+					'/TestRoute': {
+						post: {
+							description: 'Raise a NoFields event.',
+							operationId: 'TestRoute',
+							parameters: [{
+								name: 'NoFields',
+								'in': 'body',
+								description: 'Test.',
+								required: true,
+								schema: {
+									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.NoFields'
+								}
+							}],
+							responses: {
+								200: {
+									description: 'TestRoute response',
+									schema: {
+										type: 'object',
+										required: ['id'],
+										properties: {
+											id: {
+												type: 'string'
+											}
+										}
+									}
+								},
+								'default': {
+									description: 'Error'
+								}
+							}
+						}
+					}
+				},
+				definitions: {
+					'com.ffdc.orizuru.problem.avro.NoFields': {
+						type: 'object',
+						properties: {}
 					}
 				}
 			});
