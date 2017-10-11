@@ -45,6 +45,12 @@ const
 	REF_TAG = '$ref',
 	DEF_ROOT = '#/definitions/',
 
+	RESPONSE_RECORD_NAME = 'Response',
+
+	getRecordName = (fullyQualifiedName) => {
+		return fullyQualifiedName.split('.').pop();
+	},
+
 	booleanTypeMapper = (definitionsState, type) => {
 		return {
 			type: OPENAPI_TYPE_BOOLEAN
@@ -78,7 +84,7 @@ const
 	recordReferenceMapper = (definitionsState, type) => {
 
 		const
-			recordName = type.name.split('.').pop();
+			recordName = getRecordName(type.name);
 
 		definitionsState.refs.push(type);
 
@@ -91,7 +97,7 @@ const
 	recordMapper = (definitionsState, type) => {
 
 		const
-			recordName = type.name.split('.').pop(),
+			recordName = getRecordName(type.name),
 			fieldToProperty = (properties, field) => {
 				const
 					mapper = definitionsState.typeMappers[field.type.typeName];
@@ -124,7 +130,7 @@ const
 	schemasToPaths = (paths, [name, avroSchema]) => {
 
 		const
-			recordName = avroSchema.name.split('.').pop();
+			recordName = getRecordName(avroSchema.name);
 
 		paths['/' + name] = {
 			post: {
@@ -143,7 +149,7 @@ const
 					200: {
 						description: `${name} response`,
 						schema: {
-							$ref: DEF_ROOT + 'Response'
+							$ref: DEF_ROOT + RESPONSE_RECORD_NAME
 						}
 					},
 					'default': {
@@ -160,14 +166,19 @@ const
 
 		const
 			responseSchema = avsc.Type.forSchema({
-				name: 'Response',
-				doc: 'Nozomi response',
+				name: RESPONSE_RECORD_NAME,
+				doc: RESPONSE_RECORD_NAME,
 				type: 'record',
 				fields: [{
 					name: 'id',
 					type: 'string'
 				}]
-			});
+			}),
+			recordName = getRecordName(avroSchema.name);
+
+		if (recordName === RESPONSE_RECORD_NAME) {
+			throw new Error(`Schema record name clashes with the generated response record name ${RESPONSE_RECORD_NAME}`);
+		}
 
 		recordMapper(definitionsState, avroSchema);
 
@@ -210,6 +221,8 @@ module.exports = {
 	 * Returns an express RequestHandler function that will send an OpenAPI 2.0 document
 	 * as a JSON response. The template is merged with the paths and definitions
 	 * generated from the Avro schema map.
+	 * A generated response definition is created with the name 'Response' this must
+	 * not clash with any schemas passed in.
 	 * 
 	 * @param {object} template - The OpenAPI 2.0 template.
 	 * @param {object} schemas - Map of name to Avro schema JSON object.

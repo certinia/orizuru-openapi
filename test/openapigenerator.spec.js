@@ -31,7 +31,8 @@ const
 	sinon = require('sinon'),
 	sandbox = sinon.sandbox.create(),
 	generateV2 = require('../src/openapigenerator').generateV2,
-	{ calledOnce, calledWith } = sinon.assert;
+	{ calledOnce, calledWith } = sinon.assert,
+	{ expect } = require('chai');
 
 describe('openapigenerator.js', () => {
 
@@ -373,6 +374,21 @@ describe('openapigenerator.js', () => {
 					}
 				}
 			});
+
+		});
+
+		it('generate an error if a schema is named Response', () => {
+
+			// given
+			const
+				schemaMap = {
+					TestRoute: require('./resources/response')
+				},
+				handler = generateV2(template, schemaMap);
+
+			// when - then 
+
+			expect(() => handler({}, {})).to.throw('Schema record name clashes with the generated response record name Response');
 
 		});
 
