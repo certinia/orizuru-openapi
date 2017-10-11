@@ -77,17 +77,21 @@ const
 
 	recordReferenceMapper = (definitionsState, type) => {
 
+		const
+			recordName = type.name.split('.').pop();
+
 		definitionsState.refs.push(type);
 
 		return {
 			[REF_TAG]: DEF_ROOT +
-				type.name
+				recordName
 		};
 	},
 
 	recordMapper = (definitionsState, type) => {
 
 		const
+			recordName = type.name.split('.').pop(),
 			fieldToProperty = (properties, field) => {
 				const
 					mapper = definitionsState.typeMappers[field.type.typeName];
@@ -105,7 +109,7 @@ const
 			};
 
 		definitionsState.definitions.push({
-			name: type.name,
+			name: recordName,
 			value: Object.assign(definition, type.fields.length ? required : {})
 		});
 	},
@@ -132,20 +136,14 @@ const
 					description: avroSchema.doc,
 					required: true,
 					schema: {
-						$ref: DEF_ROOT + avroSchema.name
+						$ref: DEF_ROOT + recordName
 					}
 				}],
 				responses: {
 					200: {
 						description: `${name} response`,
 						schema: {
-							type: OPENAPI_TYPE_OBJECT,
-							required: ['id'],
-							properties: {
-								id: {
-									type: OPENAPI_TYPE_STRING
-								}
-							}
+							$ref: DEF_ROOT + 'Response'
 						}
 					},
 					'default': {
@@ -160,11 +158,24 @@ const
 	},
 	schemaToDefinitions = (definitionsState, [name, avroSchema]) => {
 
+		const
+			responseSchema = avsc.Type.forSchema({
+				name: 'Response',
+				doc: 'Nozomi response',
+				type: 'record',
+				fields: [{
+					name: 'id',
+					type: 'string'
+				}]
+			});
+
 		recordMapper(definitionsState, avroSchema);
 
 		while (definitionsState.refs.length > 0) {
 			recordMapper(definitionsState, definitionsState.refs.pop());
 		}
+
+		recordMapper(definitionsState, responseSchema);
 
 		return definitionsState;
 	},

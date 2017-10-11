@@ -1,5 +1,4 @@
 {
-	"namespace": "com.ffdc.orizuru.problem.avro",
 	"name": "NoFields",
 	"doc": "Test.",
 	"type": "record",

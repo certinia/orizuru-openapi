@@ -135,20 +135,14 @@ describe('openapigenerator.js', () => {
 								description: 'A question to ask.',
 								required: true,
 								schema: {
-									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Question'
+									$ref: '#/definitions/Question'
 								}
 							}],
 							responses: {
 								200: {
 									description: 'TestRoute response',
 									schema: {
-										type: 'object',
-										required: ['id'],
-										properties: {
-											id: {
-												type: 'string'
-											}
-										}
+										$ref: '#/definitions/Response'
 									}
 								},
 								'default': {
@@ -159,7 +153,7 @@ describe('openapigenerator.js', () => {
 					}
 				},
 				definitions: {
-					'com.ffdc.orizuru.problem.avro.Location': {
+					Location: {
 						type: 'object',
 						required: ['lat', 'lng'],
 						properties: {
@@ -171,7 +165,7 @@ describe('openapigenerator.js', () => {
 							}
 						}
 					},
-					'com.ffdc.orizuru.problem.avro.Delivery': {
+					Delivery: {
 						type: 'object',
 						required: ['id', 'type', 'capacity', 'location'],
 						properties: {
@@ -185,24 +179,29 @@ describe('openapigenerator.js', () => {
 								type: 'integer'
 							},
 							location: {
-								$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Location'
+								$ref: '#/definitions/Location'
 							}
 						}
 					},
-					'com.ffdc.orizuru.problem.avro.Question': {
+					Question: {
 						type: 'object',
 						required: ['id', 'deliveries'],
 						properties: {
 							deliveries: {
 								type: 'array',
 								items: {
-									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Delivery'
+									$ref: '#/definitions/Delivery'
 								}
 							},
 							id: {
 								type: 'string'
 							}
 						}
+					},
+					Response: {
+						properties: { id: { type: 'string' } },
+						required: ['id'],
+						type: 'object'
 					}
 				}
 			});
@@ -249,20 +248,14 @@ describe('openapigenerator.js', () => {
 								description: 'Test.',
 								required: true,
 								schema: {
-									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.Test'
+									$ref: '#/definitions/Test'
 								}
 							}],
 							responses: {
 								200: {
 									description: 'TestRoute response',
 									schema: {
-										type: 'object',
-										required: ['id'],
-										properties: {
-											id: {
-												type: 'string'
-											}
-										}
+										$ref: '#/definitions/Response'
 									}
 								},
 								'default': {
@@ -273,7 +266,7 @@ describe('openapigenerator.js', () => {
 					}
 				},
 				definitions: {
-					'com.ffdc.orizuru.problem.avro.Test': {
+					Test: {
 						type: 'object',
 						required: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
 						properties: {
@@ -299,6 +292,11 @@ describe('openapigenerator.js', () => {
 								type: 'string'
 							}
 						}
+					},
+					Response: {
+						properties: { id: { type: 'string' } },
+						required: ['id'],
+						type: 'object'
 					}
 				}
 			});
@@ -346,20 +344,14 @@ describe('openapigenerator.js', () => {
 								description: 'Test.',
 								required: true,
 								schema: {
-									$ref: '#/definitions/com.ffdc.orizuru.problem.avro.NoFields'
+									$ref: '#/definitions/NoFields'
 								}
 							}],
 							responses: {
 								200: {
 									description: 'TestRoute response',
 									schema: {
-										type: 'object',
-										required: ['id'],
-										properties: {
-											id: {
-												type: 'string'
-											}
-										}
+										$ref: '#/definitions/Response'
 									}
 								},
 								'default': {
@@ -370,9 +362,14 @@ describe('openapigenerator.js', () => {
 					}
 				},
 				definitions: {
-					'com.ffdc.orizuru.problem.avro.NoFields': {
+					NoFields: {
 						type: 'object',
 						properties: {}
+					},
+					Response: {
+						properties: { id: { type: 'string' } },
+						required: ['id'],
+						type: 'object'
 					}
 				}
 			});
