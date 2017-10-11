@@ -211,6 +211,8 @@ const
 module.exports = {
 
 	/**
+	 * An express request handler.
+	 * 
 	 * @typedef RequestHandler
 	 * @type {function}
 	 * @param {Object} req - The request.
