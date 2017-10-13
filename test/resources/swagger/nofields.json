@@ -1,0 +1,64 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Test",
+		"description": "Desc"
+	},
+	"host": "test.com",
+	"basePath": "/api",
+	"schemes": [
+		"https"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"paths": {
+		"/TestRoute": {
+			"post": {
+				"description": "Raise a NoFields event.",
+				"operationId": "TestRoute",
+				"parameters": [{
+					"name": "NoFields",
+					"in": "body",
+					"description": "Test.",
+					"required": true,
+					"schema": {
+						"$ref": "#/definitions/NoFields"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "TestRoute response",
+						"schema": {
+							"$ref": "#/definitions/Response"
+						}
+					},
+					"default": {
+						"description": "Error"
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"NoFields": {
+			"type": "object",
+			"properties": {}
+		},
+		"Response": {
+			"properties": {
+				"id": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"id"
+			],
+			"type": "object"
+		}
+	}
+}

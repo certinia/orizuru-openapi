@@ -1,0 +1,95 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Test",
+		"description": "Desc"
+	},
+	"host": "test.com",
+	"basePath": "/api",
+	"schemes": [
+		"https"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"paths": {
+		"/TestRoute": {
+			"post": {
+				"description": "Raise a Test event.",
+				"operationId": "TestRoute",
+				"parameters": [{
+					"name": "Test",
+					"in": "body",
+					"description": "Test.",
+					"required": true,
+					"schema": {
+						"$ref": "#/definitions/Test"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "TestRoute response",
+						"schema": {
+							"$ref": "#/definitions/Response"
+						}
+					},
+					"default": {
+						"description": "Error"
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"Test": {
+			"type": "object",
+			"required": [
+				"a",
+				"b",
+				"c",
+				"d",
+				"e",
+				"f",
+				"g"
+			],
+			"properties": {
+				"a": {
+					"type": "boolean"
+				},
+				"b": {
+					"type": "integer"
+				},
+				"c": {
+					"type": "integer"
+				},
+				"d": {
+					"type": "number"
+				},
+				"e": {
+					"type": "number"
+				},
+				"f": {
+					"type": "byte"
+				},
+				"g": {
+					"type": "string"
+				}
+			}
+		},
+		"Response": {
+			"properties": {
+				"id": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"id"
+			],
+			"type": "object"
+		}
+	}
+}

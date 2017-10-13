@@ -1,0 +1,116 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Test",
+		"description": "Desc"
+	},
+	"host": "test.com",
+	"basePath": "/api",
+	"schemes": [
+		"https"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"paths": {
+		"/TestRoute": {
+			"post": {
+				"description": "Raise a Question event.",
+				"operationId": "TestRoute",
+				"parameters": [{
+					"name": "Question",
+					"in": "body",
+					"description": "A question to ask.",
+					"required": true,
+					"schema": {
+						"$ref": "#/definitions/Question"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "TestRoute response",
+						"schema": {
+							"$ref": "#/definitions/Response"
+						}
+					},
+					"default": {
+						"description": "Error"
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"Location": {
+			"type": "object",
+			"required": [
+				"lat",
+				"lng"
+			],
+			"properties": {
+				"lat": {
+					"type": "number"
+				},
+				"lng": {
+					"type": "number"
+				}
+			}
+		},
+		"Delivery": {
+			"type": "object",
+			"required": [
+				"id",
+				"type",
+				"capacity",
+				"location"
+			],
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				},
+				"capacity": {
+					"type": "integer"
+				},
+				"location": {
+					"$ref": "#/definitions/Location"
+				}
+			}
+		},
+		"Question": {
+			"type": "object",
+			"required": [
+				"id",
+				"deliveries"
+			],
+			"properties": {
+				"deliveries": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Delivery"
+					}
+				},
+				"id": {
+					"type": "string"
+				}
+			}
+		},
+		"Response": {
+			"properties": {
+				"id": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"id"
+			],
+			"type": "object"
+		}
+	}
+}

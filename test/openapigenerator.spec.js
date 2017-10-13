@@ -100,7 +100,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/test')
+					TestRoute: require('./resources/avro/single')
 				},
 				handler = generateV2(template, schemaMap);
 
@@ -111,101 +111,7 @@ describe('openapigenerator.js', () => {
 			// then
 
 			calledOnce(res.json);
-			calledWith(res.json, {
-				swagger: '2.0',
-				info: {
-					version: '1.0.0',
-					title: 'Test',
-					description: 'Desc'
-				},
-				host: 'test.com',
-				basePath: '/api',
-				schemes: [
-					'https'
-				],
-				consumes: ['application/json'],
-				produces: ['application/json'],
-				paths: {
-					'/TestRoute': {
-						post: {
-							description: 'Raise a Question event.',
-							operationId: 'TestRoute',
-							parameters: [{
-								name: 'Question',
-								'in': 'body',
-								description: 'A question to ask.',
-								required: true,
-								schema: {
-									$ref: '#/definitions/Question'
-								}
-							}],
-							responses: {
-								200: {
-									description: 'TestRoute response',
-									schema: {
-										$ref: '#/definitions/Response'
-									}
-								},
-								'default': {
-									description: 'Error'
-								}
-							}
-						}
-					}
-				},
-				definitions: {
-					Location: {
-						type: 'object',
-						required: ['lat', 'lng'],
-						properties: {
-							lat: {
-								type: 'number'
-							},
-							lng: {
-								type: 'number'
-							}
-						}
-					},
-					Delivery: {
-						type: 'object',
-						required: ['id', 'type', 'capacity', 'location'],
-						properties: {
-							id: {
-								type: 'string'
-							},
-							type: {
-								type: 'string'
-							},
-							capacity: {
-								type: 'integer'
-							},
-							location: {
-								$ref: '#/definitions/Location'
-							}
-						}
-					},
-					Question: {
-						type: 'object',
-						required: ['id', 'deliveries'],
-						properties: {
-							deliveries: {
-								type: 'array',
-								items: {
-									$ref: '#/definitions/Delivery'
-								}
-							},
-							id: {
-								type: 'string'
-							}
-						}
-					},
-					Response: {
-						properties: { id: { type: 'string' } },
-						required: ['id'],
-						type: 'object'
-					}
-				}
-			});
+			calledWith(res.json, require('./resources/swagger/single'));
 		});
 
 		it('generate a valid document for all AVRO types', () => {
@@ -213,7 +119,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/types')
+					TestRoute: require('./resources/avro/types')
 				},
 				handler = generateV2(template, schemaMap);
 
@@ -224,83 +130,7 @@ describe('openapigenerator.js', () => {
 			// then
 
 			calledOnce(res.json);
-			calledWith(res.json, {
-				swagger: '2.0',
-				info: {
-					version: '1.0.0',
-					title: 'Test',
-					description: 'Desc'
-				},
-				host: 'test.com',
-				basePath: '/api',
-				schemes: [
-					'https'
-				],
-				consumes: ['application/json'],
-				produces: ['application/json'],
-				paths: {
-					'/TestRoute': {
-						post: {
-							description: 'Raise a Test event.',
-							operationId: 'TestRoute',
-							parameters: [{
-								name: 'Test',
-								'in': 'body',
-								description: 'Test.',
-								required: true,
-								schema: {
-									$ref: '#/definitions/Test'
-								}
-							}],
-							responses: {
-								200: {
-									description: 'TestRoute response',
-									schema: {
-										$ref: '#/definitions/Response'
-									}
-								},
-								'default': {
-									description: 'Error'
-								}
-							}
-						}
-					}
-				},
-				definitions: {
-					Test: {
-						type: 'object',
-						required: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-						properties: {
-							a: {
-								type: 'boolean'
-							},
-							b: {
-								type: 'integer'
-							},
-							c: {
-								type: 'integer'
-							},
-							d: {
-								type: 'number'
-							},
-							e: {
-								type: 'number'
-							},
-							f: {
-								type: 'byte'
-							},
-							g: {
-								type: 'string'
-							}
-						}
-					},
-					Response: {
-						properties: { id: { type: 'string' } },
-						required: ['id'],
-						type: 'object'
-					}
-				}
-			});
+			calledWith(res.json, require('./resources/swagger/types'));
 
 		});
 
@@ -309,7 +139,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/nofields')
+					TestRoute: require('./resources/avro/nofields')
 				},
 				handler = generateV2(template, schemaMap);
 
@@ -320,60 +150,7 @@ describe('openapigenerator.js', () => {
 			// then
 
 			calledOnce(res.json);
-			calledWith(res.json, {
-				swagger: '2.0',
-				info: {
-					version: '1.0.0',
-					title: 'Test',
-					description: 'Desc'
-				},
-				host: 'test.com',
-				basePath: '/api',
-				schemes: [
-					'https'
-				],
-				consumes: ['application/json'],
-				produces: ['application/json'],
-				paths: {
-					'/TestRoute': {
-						post: {
-							description: 'Raise a NoFields event.',
-							operationId: 'TestRoute',
-							parameters: [{
-								name: 'NoFields',
-								'in': 'body',
-								description: 'Test.',
-								required: true,
-								schema: {
-									$ref: '#/definitions/NoFields'
-								}
-							}],
-							responses: {
-								200: {
-									description: 'TestRoute response',
-									schema: {
-										$ref: '#/definitions/Response'
-									}
-								},
-								'default': {
-									description: 'Error'
-								}
-							}
-						}
-					}
-				},
-				definitions: {
-					NoFields: {
-						type: 'object',
-						properties: {}
-					},
-					Response: {
-						properties: { id: { type: 'string' } },
-						required: ['id'],
-						type: 'object'
-					}
-				}
-			});
+			calledWith(res.json, require('./resources/swagger/nofields'));
 
 		});
 
@@ -382,7 +159,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/response')
+					TestRoute: require('./resources/avro/response')
 				},
 				handler = generateV2(template, schemaMap);
 
