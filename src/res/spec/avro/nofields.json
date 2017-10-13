@@ -1,0 +1,6 @@
+{
+	"name": "NoFields",
+	"doc": "Test.",
+	"type": "record",
+	"fields": []
+}

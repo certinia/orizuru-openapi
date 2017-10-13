@@ -1,0 +1,50 @@
+{
+	"namespace": "com.ffdc.orizuru.problem.avro",
+	"name": "Question",
+	"doc": "A question to ask.",
+	"type": "record",
+	"fields": [{
+			"name": "id",
+			"type": "string"
+		},
+		{
+			"name": "deliveries",
+			"type": {
+				"type": "array",
+				"items": {
+					"type": "record",
+					"name": "Delivery",
+					"fields": [{
+							"name": "id",
+							"type": "string"
+						},
+						{
+							"name": "type",
+							"type": "string"
+						},
+						{
+							"name": "capacity",
+							"type": "int"
+						},
+						{
+							"name": "location",
+							"type": {
+								"type": "record",
+								"name": "Location",
+								"fields": [{
+										"name": "lat",
+										"type": "double"
+									},
+									{
+										"name": "lng",
+										"type": "double"
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		}
+	]
+}
