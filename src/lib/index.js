@@ -27,7 +27,7 @@
 'use strict';
 
 /**
- * Nozomi OpenAPI module.
+ * Orizuru OpenAPI module.
  * @module
  */
 

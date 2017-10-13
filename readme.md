@@ -1,13 +1,13 @@
-# Nozomi OpenAPI schema generator.
+# Orizuru OpenAPI schema generator.
 
-Nozomi OpenAPI generator is a module that can generate an OpenAPI document from a map of service name to [Avro](https://avro.apache.org/) schemas. Each schema represents an input event that is exposed as a **POST** path, within the OpenAPI definition.
+Orizuru OpenAPI generator is a module that can generate an OpenAPI document from a map of service name to [Avro](https://avro.apache.org/) schemas. Each schema represents an input event that is exposed as a **POST** path, within the OpenAPI definition.
 
 Currently [OpenAPI version 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md) documents are generated. 
 
 ## Install
 
 ```
-$ npm install @financialforcedev/nozomi-openapi
+$ npm install @financialforcedev/orizuru-openapi
 ```
 
 ### Usage
@@ -15,7 +15,7 @@ $ npm install @financialforcedev/nozomi-openapi
 ```javascript
 
 const
-	openapiGenerator = require('@financialforcedev/nozomi-openapi').generator;
+	openapiGenerator = require('@financialforcedev/orizuru-openapi').generator;
 
 schemaMap = {
   'question': require('./question')
@@ -36,7 +36,7 @@ app.get('/openapi/v2', openapiGenerator.generateV2({
 
 ## Response schema
 
-The Nozomi project is aimed at asynchronous use cases, so the response schema is always a simple id string.
+The Orizuru project is aimed at asynchronous use cases, so the response schema is always a simple id string.
 
 ```javascript
 
