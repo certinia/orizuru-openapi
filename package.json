@@ -4,7 +4,7 @@
   "description": "OpenAPI generator for Nozomi.",
   "main": "src/lib/index.js",
   "scripts": {
-    "doc": "jsdoc src -r -d doc --readme readme.md",
+    "doc": "jsdoc src/lib -r -d doc --readme readme.md",
     "pretest": "eslint src test",
     "test": "nyc mocha --recursive --recursive src/spec"
   },
