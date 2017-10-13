@@ -2,11 +2,11 @@
   "name": "@financialforcedev/nozomi-openapi",
   "version": "1.0.0",
   "description": "OpenAPI generator for Nozomi.",
-  "main": "src/index.js",
+  "main": "src/lib/index.js",
   "scripts": {
     "doc": "jsdoc src -r -d doc --readme readme.md",
     "pretest": "eslint src test",
-    "test": "nyc mocha"
+    "test": "nyc mocha --recursive --recursive src/spec"
   },
   "repository": {
     "type": "git",

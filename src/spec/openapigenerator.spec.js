@@ -30,7 +30,7 @@ const
 	_ = require('lodash'),
 	sinon = require('sinon'),
 	sandbox = sinon.sandbox.create(),
-	generateV2 = require('../src/openapigenerator').generateV2,
+	generateV2 = require('../lib/openapigenerator').generateV2,
 	{ calledOnce, calledWith } = sinon.assert,
 	{ expect } = require('chai');
 
@@ -75,7 +75,7 @@ describe('openapigenerator.js', () => {
 			// then
 
 			calledOnce(res.json);
-			calledWith(res.json, require('./resources/swagger/none'));
+			calledWith(res.json, require('../res/spec/swagger/none'));
 
 		});
 
@@ -84,7 +84,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/avro/single')
+					TestRoute: require('../res/spec/avro/single')
 				},
 				handler = generateV2(template, schemaMap);
 
@@ -95,7 +95,7 @@ describe('openapigenerator.js', () => {
 			// then
 
 			calledOnce(res.json);
-			calledWith(res.json, require('./resources/swagger/single'));
+			calledWith(res.json, require('../res/spec/swagger/single'));
 		});
 
 		it('generate a valid document for all AVRO types', () => {
@@ -103,7 +103,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/avro/types')
+					TestRoute: require('../res/spec/avro/types')
 				},
 				handler = generateV2(template, schemaMap);
 
@@ -114,7 +114,7 @@ describe('openapigenerator.js', () => {
 			// then
 
 			calledOnce(res.json);
-			calledWith(res.json, require('./resources/swagger/types'));
+			calledWith(res.json, require('../res/spec/swagger/types'));
 
 		});
 
@@ -123,7 +123,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/avro/nofields')
+					TestRoute: require('../res/spec/avro/nofields')
 				},
 				handler = generateV2(template, schemaMap);
 
@@ -134,7 +134,7 @@ describe('openapigenerator.js', () => {
 			// then
 
 			calledOnce(res.json);
-			calledWith(res.json, require('./resources/swagger/nofields'));
+			calledWith(res.json, require('../res/spec/swagger/nofields'));
 
 		});
 
@@ -143,7 +143,7 @@ describe('openapigenerator.js', () => {
 			// given
 			const
 				schemaMap = {
-					TestRoute: require('./resources/avro/response')
+					TestRoute: require('../res/spec/avro/response')
 				},
 				handler = generateV2(template, schemaMap);
 

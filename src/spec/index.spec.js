@@ -37,7 +37,7 @@ describe('index.js', () => {
 		// given - when
 		const
 			mockGenerator = { mock: 'mockGenerator' },
-			index = proxyquire('../src/index', {
+			index = proxyquire('../lib/index', {
 				['./openapigenerator']: mockGenerator
 			});
 
