@@ -1,5 +1,6 @@
 # Orizuru OpenAPI schema generator
 
+[![Build Status](https://travis-ci.org/financialforcedev/orizuru-openapi.svg?branch=master)](https://travis-ci.org/financialforcedev/orizuru-openapi)
 [![NSP Status](https://nodesecurity.io/orgs/ffres/projects/178e230f-bb6f-4032-8343-fddec5b92397/badge)](https://nodesecurity.io/orgs/ffres/projects/178e230f-bb6f-4032-8343-fddec5b92397)
 
 Orizuru OpenAPI generator is a module that can generate an OpenAPI document from a map of service name to [Avro](https://avro.apache.org/) schemas. Each schema represents an input event that is exposed as a **POST** path, within the OpenAPI definition.
