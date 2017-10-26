@@ -51,3 +51,6 @@ schema: {
 }
 
 ```
+## API Docs
+
+Click to view [JSDoc API documentation](http://htmlpreview.github.io/?https://github.com/financialforcedev/orizuru-openapi/blob/master/doc/index.html).
