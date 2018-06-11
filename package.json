@@ -21,12 +21,11 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "chai": "^4.1.2",
-    "eslint": "^4.8.0",
     "jsdoc": "^3.5.5",
-    "mocha": "^4.0.0",
-    "nyc": "^11.2.1",
-    "proxyquire": "^1.8.0",
-    "sinon": "^4.0.1"
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "proxyquire": "^2.0.1",
+    "sinon": "^5.1.0"
   },
   "nyc": {
     "check-coverage": true,
@@ -48,7 +47,7 @@
     "all": true
   },
   "dependencies": {
-    "@financialforcedev/eslint-config": "^3.0.1",
+    "@financialforcedev/eslint-config": "^4.0.0",
     "avsc": "^5.0.6",
     "lodash": "^4.17.4"
   }

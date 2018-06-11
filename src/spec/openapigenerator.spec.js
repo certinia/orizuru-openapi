@@ -29,7 +29,6 @@
 const
 	_ = require('lodash'),
 	sinon = require('sinon'),
-	sandbox = sinon.sandbox.create(),
 	generateV2 = require('../lib/openapigenerator').generateV2,
 	{ calledOnce, calledWith } = sinon.assert,
 	{ expect } = require('chai');
@@ -52,11 +51,11 @@ describe('openapigenerator.js', () => {
 			basePath: '/api'
 		};
 
-		sandbox.stub(res, 'json');
+		sinon.stub(res, 'json');
 	});
 
 	afterEach(() => {
-		sandbox.reset();
+		sinon.reset();
 	});
 
 	describe('generateV2', () => {
